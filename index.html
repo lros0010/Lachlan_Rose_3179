@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <div id="vis"></div>
+
+  <script type="text/javascript">
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 800,
+      "height": 600,
+      "projection": {"type": "mercator"},
+      "title": "Proportion of Forest Area Burnt (2016-21)",
+      "layer": [
+        {
+          "data": {
+            "url": "aus_states.geojson",
+            "format": {"type": "geojson"}
+          },
+          "transform": [
+            {
+              "lookup": "properties.STATE_NAME",   <!-- adjust to match your GeoJSON property -->
+              "from": {
+                "data": {"url": "bushfire_proportion_table3_1b3.csv"},
+                "key": "Jurisdiction",
+                "fields": ["Proportion of total area burnt"]
+              }
+            }
+          ],
+          "mark": {"type": "geoshape"},
+          "encoding": {
+            "color": {
+              "field": "Proportion of total area burnt",
+              "type": "quantitative",
+              "scale": {"scheme": "orangered"}
+            },
+            "tooltip": [
+              {"field": "properties.STATE_NAME", "title": "State"},
+              {"field": "Proportion of total area burnt", "title": "Proportion"}
+            ]
+          }
+        }
+      ]
+    };
+
+    vegaEmbed('#vis', spec);
+  </script>
+</body>
+</html>
